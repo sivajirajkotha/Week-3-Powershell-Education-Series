@@ -1,0 +1,237 @@
+################Variables###################
+#Automatic Variables 
+Get-help about_automatic_variables
+
+#Alternate
+cd variable:
+dir
+cd $HOME
+
+#Examples
+# - Array that holds the terminating and nonterminating errors generated in the shell
+$error  
+# Success/fail status of the last operation . Contains true if last operation is succeeded
+$? 
+# Variable that represents the concept of Null
+$null 
+# Installation location of PowerShell
+$pshome 
+# Variable that represents the Boolean value True
+$true 
+$false
+
+# why string false doesn't work 
+$test = "false"
+$result = (2 -gt 5) -eq $test
+$result = (2 -gt 5) -eq $false
+
+# Means by which scripts can access the APIs and implementation details of the current host and user interface.
+$host 
+
+#Uer Defined Variables 
+New-Variable zipcode -Value 98033 
+$zipcode = 98034
+
+#${c:\temp\sample} = 1
+
+
+#constants 
+New-Variable -Name speedofsound -Value "331.2" -Option Constant 
+Remove-Variable -Name speedofsound 
+Set-Variable -Name speedofsound -Value "234”
+Clear-Variable -Name speedofsound
+
+#ReadOnly 
+New-Variable -Name writeprotected -Value "haha can’t change me" -Option ReadOnly
+$writeprotected
+$writeprotected = 5 
+Set-Variable -Name writeprotected -Value 5 –Force  
+$writeprotected 
+
+#Literal Strings 
+
+$a = 120
+
+$lString = '
+As
+easy
+as
+$a
+' 
+
+#expandable strings
+$eString = "
+As
+easy
+as
+$a
+" 
+
+#here strings
+$lhere = @'
+As
+'easy' 
+as
+$a
+'@ 
+
+#sub expression
+$a = Get-Service -Name BITS
+$a.GetType().FullName
+$servicename = "The service name is $a.name"
+$b = "$a.Name is $a.Status"
+$b
+$b = "$($a.Name) is $($a.Status)"
+#alternate
+$servicename = "The service name is " +$a.Name
+
+$two = 2
+Write-Output -InputObject “one plus one = $(1+1), two time 2 is $( 8/4+8-3*$two)“
+
+################FLOW CONTROL###################
+
+# While loop
+
+$x= 0
+while ($x -lt 10)
+{
+    $x
+    $x++
+}
+
+#do While
+$x=0
+do
+{
+    $x
+    $x++
+}
+while($x -lt 10)
+
+
+$servers = Get-Content C:\Users\sikotha\Desktop\servers.txt
+$x= 0
+do
+{
+  $servers[$x]
+  $x++  
+}
+while($servers[$x] -ne "server6")
+
+
+
+#do Until
+
+$cpin = 2580
+do
+{
+    $enterpin = Read-Host "Enter your 4 digit pin"    
+}
+until($enterpin -eq $cpin)
+
+
+#for Loop
+for ($i = 1; $i -lt 10; $i++)
+{ 
+    New-Item -Path C:\Temp -Name "folder$i" -ItemType Directory    
+}
+
+
+#Foreach loop (Enumeration Loop)
+$services = Get-Content C:\Users\sikotha\Desktop\services.txt
+foreach($service in $services)
+{
+    $ser= Get-Service $service
+    Write-Host "$($ser.Name) is $($ser.Status)"
+}
+
+
+
+
+
+
+
+#IF statement
+if(Test-Path C:\Temp\alias.txt)
+{
+    "Alias.txt exist"
+}
+
+#if else
+
+if(Test-Path C:\Temp\alias.txt)
+{
+    "Alias.txt exist"
+}
+else
+{
+    "alias.txt doesn't exist"
+    New-Item -Path C:\Temp -Name alias.txt -ItemType File
+}
+
+#If..ElseIf..Else Statement 
+
+[int]$age = Read-Host "Enter your age"
+if($age -gt 0 -and $age -lt 5)
+{
+    Write-Host "Welcome to kinder garden"
+}
+elseif($age -ge 5 -and $age -lt 15)
+{
+    Write-Host "Welcome to Junior school"
+}
+elseif($age -ge 15 -and $age -lt 25)
+{
+    Write-Host "Welcome to college"
+}
+else
+{
+    Write-Host "searching for job"  
+}
+
+#Basic switch
+
+$number = 0
+switch ($number)
+{
+   0 	   {write-Host “Its 0"}
+   0 	   {write-Host “Its Zero"}
+   2 	   {write-Host “Its 2"}
+} 
+
+$number = 10
+switch ($number)
+{
+   0 	   {write-Host “Its 0"}
+   0 	   {write-Host “Its Zero"}
+   2 	   {write-Host “Its 2"}
+   Default {write-Host “Its Not 2 or 0"}
+} 
+
+# switch with whildcard
+$FileNames = (Get-ChildItem C:\Windows).FullName
+Switch -Wildcard ($FileNames)
+{
+    “*hh.exe*"   {"Found hh.exe"}
+    “*win.ini*"  {"Found win.ini"}
+    Default    {"Not hh.exe or win.ini"}
+} 
+
+
+# switch with case sensitivity
+
+switch -CaseSensitive ("HELLO")
+{
+"hello" {Get-Service}
+"HELLO" {Get-Process}
+} 
+
+# switch with regex
+
+switch -Regex (Get-ChildItem -Path c:\)
+{
+ "^program" {Write-Host $_ -ForegroundColor Green}
+ "s$" {Write-Host $_ -ForegroundColor Cyan}
+} 
+
+
